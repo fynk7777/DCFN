@@ -12,7 +12,12 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user}')
+    print(f'{bot.user} としてログインしました^o^')
+    try:
+        synced = await bot.tree.sync()
+        print(f'Synced {len(synced)} commands')
+    except Exception as e:
+        print(f'Error syncing commands: {e}')
 
 @bot.command()
 async def on_message(message):
