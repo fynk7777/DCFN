@@ -3,7 +3,9 @@ import os
 import asyncio
 from datetime import datetime, timedelta
 from discord.ext import commands
+from keep_alive import keep_alive  # keep_aliveのインポート
 
+# TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 intents = discord.Intents.default()
@@ -40,8 +42,9 @@ async def handle_bump_notification(message):
     )
     await message.channel.send(embed=notice_embed)
 
+# BOTの実行
 try:
-    keep_alive()
-    bot.run(TOKEN)
+    keep_alive()  # Webサーバーの起動
+    bot.run(TOKEN)  # BOTの実行
 except Exception as e:
     print(f'エラーが発生しました: {e}')
