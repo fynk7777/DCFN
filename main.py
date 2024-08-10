@@ -8,21 +8,31 @@ from keep_alive import keep_alive  # keep_aliveのインポート
 # TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-intents = discord.Intents.default()
-intents.messages = True
+# Intentsの設定
+intents = discord.Intents.all()
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+# Botクライアントの初期化
+bot = commands.Bot(command_prefix='!', intents=intents)
 
-# BUMP検知および通知機能
+# 起動時に動作する処理
+@bot.event
+async def on_ready():
+    print(f'{bot.user} としてログインしました^o^')
+    try:
+        synced = await bot.tree.sync()
+        print(f'Synced {len(synced)} commands')
+    except Exception as e:
+        print(f'Error syncing commands: {e}')
+    # ボットが準備完了したらタスクを開始
+    check_members.start()  # この行を追加
+    # bakabonnpapa に DM を送信
+    await send_update_message()
+
 @bot.event
 async def on_message(message):
+    global channel_pairs, user_word_counts, respond_words
     if message.author == bot.user:
         return
-
-    if "/bump" in message.content:  # BUMPコマンドを検知
-        await handle_bump_notification(message)
-
-    await bot.process_commands(message)
 
 async def handle_bump_notification(message):
     master = datetime.now() + timedelta(hours=2)
@@ -33,7 +43,7 @@ async def handle_bump_notification(message):
         timestamp=datetime.now()
     )
     await message.channel.send(embed=notice_embed)
-    await asyncio.sleep(7200)  # 2時間待機
+    await asyncio.sleep(7200)
     notice_embed = discord.Embed(
         title="BUMPが可能です！",
         description="</bump:947088344167366698> でBUMPできます",
@@ -41,6 +51,14 @@ async def handle_bump_notification(message):
         timestamp=datetime.now()
     )
     await message.channel.send(embed=notice_embed)
+
+async def send_update_message():
+    update_id =  71884248932155473
+    user_id = 1212687868603007067  # bakabonnpapa のユーザーID を設定する
+    user = await bot.fetch_user(user_id)
+    update = await bot.fetch_channel(update_id)
+    await user.send("アップデートしました!!")
+    await update.send("アップデートしました!!")
 
 # BOTの実行
 try:
