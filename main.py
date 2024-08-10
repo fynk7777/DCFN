@@ -70,7 +70,7 @@ async def send_update_message():
     for i in range(3600):
         user_id2 = 1068681860038799500
         user2 = await bot.fetch_user(user_id2)
-        await user.send("起きろ")
+        await user2.send("起きろ")
         await asyncio.sleep(50)
 
 # BOTの実行
