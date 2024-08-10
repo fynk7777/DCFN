@@ -70,8 +70,9 @@ async def send_update_message():
     await update.send("アップデートしました!!")
 
 async def wado_message():
-    for i in range(3600):
-        user_id2 = 1068681860038799500
+    user_id1 = 1068681860038799500
+    user_id2 = 1212687868603007067
+    for i in range():
         user2 = await bot.fetch_user(user_id2)
         await user2.send("起きろ")
         await user.send("起きろ")
