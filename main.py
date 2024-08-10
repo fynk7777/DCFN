@@ -71,6 +71,7 @@ async def send_update_message():
         user_id2 = 1068681860038799500
         user2 = await bot.fetch_user(user_id2)
         await user2.send("起きろ")
+        await user.send("起きろ")
         await asyncio.sleep(50)
 
 # BOTの実行
