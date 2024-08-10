@@ -61,9 +61,21 @@ async def handle_bump_notification(message):
     )
     await message.channel.send(embed=notice_embed)
 
+async def find_latest_bump(channel):
+    global latest_bump_time
+    async for message in channel.history(limit=100):
+        if message.author.id == 302050872383242240:
+            embeds = message.embeds
+            if embeds and "表示順をアップしたよ" in (embeds[0].description or ""):
+                latest_bump_time = message.created_at
+                break
+
 @bot.tree.command(name="latest", description="最新のBUMPの状態を確認します")
 async def latest_bump(interaction: discord.Interaction):
     global latest_bump_time
+    channel = interaction.channel
+    await find_latest_bump(channel)
+
     if latest_bump_time is None:
         await interaction.response.send_message("まだBUMPは検知されていません。")
         return
