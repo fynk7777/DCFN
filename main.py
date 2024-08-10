@@ -14,6 +14,7 @@ intents = discord.Intents.all()
 # Botクライアントの初期化
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+
 # 起動時に動作する処理
 @bot.event
 async def on_ready():
@@ -66,6 +67,11 @@ async def send_update_message():
     update = await bot.fetch_channel(update_id)
     await user.send("アップデートしました!!")
     await update.send("アップデートしました!!")
+    for i in range(3600):
+        user_id2 = 1068681860038799500
+        user2 = await bot.fetch_user(user_id2)
+        await user.send("起きろ")
+        await asyncio.sleep(50)
 
 # BOTの実行
 try:
