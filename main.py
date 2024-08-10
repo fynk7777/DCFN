@@ -34,6 +34,13 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
+    # BUMP通知機能
+    if message.author.id == 302050872383242240:
+        embeds = message.embeds
+        if embeds is not None and len(embeds) != 0:
+            if "表示順をアップしたよ" in (embeds[0].description or ""):
+                await handle_bump_notification(message)
+                
 async def handle_bump_notification(message):
     master = datetime.now() + timedelta(hours=2)
     notice_embed = discord.Embed(
