@@ -73,9 +73,10 @@ async def wado_message():
     user_id1 = 1068681860038799500
     user_id2 = 1212687868603007067
     for i in range():
+        user1 = await bot.fetch_user(user_id1)
         user2 = await bot.fetch_user(user_id2)
+        await user1.send("起きろ")
         await user2.send("起きろ")
-        await user.send("起きろ")
 
 # BOTの実行
 try:
