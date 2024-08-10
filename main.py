@@ -4,6 +4,8 @@ import asyncio
 from datetime import datetime, timedelta
 from discord.ext import commands
 
+TOKEN = os.getenv("DISCORD_TOKEN")
+
 intents = discord.Intents.default()
 intents.messages = True
 
@@ -38,5 +40,8 @@ async def handle_bump_notification(message):
     )
     await message.channel.send(embed=notice_embed)
 
-# トークンを環境変数から取得してBOTを実行
-bot.run(os.getenv("DISCORD_TOKEN"))
+try:
+    keep_alive()
+    bot.run(TOKEN)
+except Exception as e:
+    print(f'エラーが発生しました: {e}')
