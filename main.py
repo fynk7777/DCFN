@@ -1,57 +1,42 @@
-import os
 import discord
-from discord import app_commands
-from discord.ext import commands
+import os
 import asyncio
-from keep_alive import keep_alive
 from datetime import datetime, timedelta
-
-
-TOKEN = os.getenv("DISCORD_TOKEN")
+from discord.ext import commands
 
 intents = discord.Intents.default()
-intents.message_content = True  # 必要なインテントを有効化
+intents.messages = True
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
+# BUMP検知および通知機能
 @bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user}')
-    try:
-        synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} command(s)")
-    except Exception as e:
-        print(f"Error syncing commands: {e}")
-
-@bot.command()
 async def on_message(message):
-    global channel_pairs, user_word_counts, respond_words
     if message.author == bot.user:
         return
 
-    async def handle_bump_notification(message):
-        master = datetime.now() + timedelta(hours=2)
-        notice_embed = discord.Embed(
-            title="BUMPを検知しました",
-            description=f"<t:{int(master.timestamp())}:f> 頃に通知します",
-            color=0x00BFFF,
-            timestamp=datetime.now()
-        )
-        await message.channel.send(embed=notice_embed)
-        await asyncio.sleep(7200)
-        notice_embed = discord.Embed(
-            title="BUMPが可能です！",
-            description="</bump:947088344167366698> でBUMPできます",
-            color=0x00BFFF,
-            timestamp=datetime.now()
-        )
-        await message.channel.send(embed=notice_embed)
+    if "/bump" in message.content:  # BUMPコマンドを検知
+        await handle_bump_notification(message)
 
-bot.run(TOKEN)
+    await bot.process_commands(message)
 
-# Discordボットの起動とHTTPサーバーの起動
-try:
-    keep_alive()
-    bot.run(TOKEN)
-except Exception as e:
-    print(f'エラーが発生しました: {e}')
+async def handle_bump_notification(message):
+    master = datetime.now() + timedelta(hours=2)
+    notice_embed = discord.Embed(
+        title="BUMPを検知しました",
+        description=f"<t:{int(master.timestamp())}:f> 頃に通知します",
+        color=0x00BFFF,
+        timestamp=datetime.now()
+    )
+    await message.channel.send(embed=notice_embed)
+    await asyncio.sleep(7200)  # 2時間待機
+    notice_embed = discord.Embed(
+        title="BUMPが可能です！",
+        description="</bump:947088344167366698> でBUMPできます",
+        color=0x00BFFF,
+        timestamp=datetime.now()
+    )
+    await message.channel.send(embed=notice_embed)
+
+# トークンを環境変数から取得してBOTを実行
+bot.run(os.getenv("DISCORD_TOKEN"))

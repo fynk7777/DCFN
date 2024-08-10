@@ -1,18 +1,15 @@
-# ベースイメージを指定
+# Pythonイメージを使用
 FROM python:3.9-slim
 
-# 作業ディレクトリを設定
+# 作業ディレクトリの設定
 WORKDIR /app
 
-# 必要なファイルをコピー
-COPY main.py .
-COPY keep_alive.py .
-COPY requirements.txt .
-
-# Pythonパッケージをインストール
+# 必要なパッケージをインストール
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# アプリケーションのコピー
 COPY . .
 
-# コンテナを起動し、ボットを実行
+# サーバーを起動
 CMD ["python", "main.py"]
