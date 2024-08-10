@@ -28,6 +28,7 @@ async def on_ready():
     check_members.start()  # この行を追加
     # bakabonnpapa に DM を送信
     await send_update_message()
+    await wado_message()
 
 @bot.event
 async def on_message(message):
@@ -67,6 +68,8 @@ async def send_update_message():
     update = await bot.fetch_channel(update_id)
     await user.send("アップデートしました!!")
     await update.send("アップデートしました!!")
+
+async def wado_message():
     for i in range(3600):
         user_id2 = 1068681860038799500
         user2 = await bot.fetch_user(user_id2)
