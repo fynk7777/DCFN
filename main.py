@@ -17,6 +17,10 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # 最新のBUMPの時刻を記録する変数
 latest_bump_time = None
 
+# BOTロールと参加者ロールの名前を定義
+BOT_ROLE_NAME = "BOT"
+PARTICIPANT_ROLE_NAME = "😀参加者"
+
 # 起動時に動作する処理
 @bot.event
 async def on_ready():
@@ -26,6 +30,7 @@ async def on_ready():
         print(f'Synced {len(synced)} commands')
     except Exception as e:
         print(f'Error syncing commands: {e}')
+    check_members.start()  # この行を追加
     # bakabonnpapa に DM を送信
     await send_update_message()
 
@@ -84,6 +89,30 @@ async def send_update_message():
     await user.send(embed=embed)
 
 
+@tasks.loop(seconds=1)  # 1秒ごとにチェック
+async def check_members():
+    for guild in bot.guilds:
+        bot_role = discord.utils.get(guild.roles, name=BOT_ROLE_NAME)
+        participant_role = discord.utils.get(guild.roles, name=PARTICIPANT_ROLE_NAME)
+        if bot_role and participant_role:
+            for member in guild.members:
+                try:
+                    if bot_role in member.roles and participant_role in member.roles:
+                        # BOTロールがついている人から参加者ロールを削除
+                        await member.remove_roles(participant_role)
+                        print(f"Removed {PARTICIPANT_ROLE_NAME} role from {member.name}")
+                    elif bot_role not in member.roles and participant_role not in member.roles:
+                        # BOTロールがついていない人に参加者ロールを追加
+                        await member.add_roles(participant_role)
+                        print(f"Added {PARTICIPANT_ROLE_NAME} role to {member.name}")
+                except discord.errors.Forbidden:
+                    print(f"Failed to modify role for {member.name}: Missing Permissions")
+                except discord.HTTPException as e:
+                    if e.status == 429:
+                        print(f"Too Many Requests: {e}")
+                        await asyncio.sleep(1)  # 5秒待機
+                    else:
+                        print(f"An error occurred: {e}")
 
 # BOTの実行
 try:
