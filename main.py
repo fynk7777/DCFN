@@ -2,7 +2,7 @@ import discord
 import os
 import asyncio
 from datetime import datetime, timedelta
-from discord.ext import commands
+from discord.ext import commands, tasks
 from keep_alive import keep_alive  # keep_aliveのインポート
 
 # TOKENの指定
@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 latest_bump_time = None
 
 # BOTロールと参加者ロールの名前を定義
-BOT_ROLE_NAME = "BOT"
+BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
 
 # 起動時に動作する処理
@@ -110,7 +110,7 @@ async def check_members():
                 except discord.HTTPException as e:
                     if e.status == 429:
                         print(f"Too Many Requests: {e}")
-                        await asyncio.sleep(1)  # 5秒待機
+                        await asyncio.sleep(1)  #1秒待機
                     else:
                         print(f"An error occurred: {e}")
 
