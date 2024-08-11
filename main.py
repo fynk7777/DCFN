@@ -29,21 +29,20 @@ async def on_ready():
     # bakabonnpapa に DM を送信
     await send_update_message()
 
-@bot.event
-async def on_message(message):
+# メッセージコンテキストメニューを追加
+@bot.tree.context_menu(name="最新のBUMP")
+async def latest_bump_context(interaction: discord.Interaction, message: discord.Message):
     global latest_bump_time
-    if message.author == bot.user:
-        return
 
-    # BUMP通知機能
+    # BUMPメッセージかどうかを確認
     if message.author.id == 302050872383242240:
         embeds = message.embeds
         if embeds is not None and len(embeds) != 0:
             if "表示順をアップしたよ" in (embeds[0].description or ""):
                 latest_bump_time = datetime.now()  # 最新のBUMPの時刻を記録
-                await handle_bump_notification(message)
+                await handle_bump_notification(message, interaction)
 
-async def handle_bump_notification(message):
+async def handle_bump_notification(message, interaction=None):
     master = datetime.now() + timedelta(hours=2)
     notice_embed = discord.Embed(
         title="BUMPを検知しました",
@@ -51,6 +50,8 @@ async def handle_bump_notification(message):
         color=0x00BFFF,
         timestamp=datetime.now()
     )
+    if interaction:
+        await interaction.response.send_message(embed=notice_embed, ephemeral=True)  # ユーザーに一時的にメッセージを送信
     await message.channel.send(embed=notice_embed)
     await asyncio.sleep(7200)
     notice_embed = discord.Embed(
@@ -60,35 +61,6 @@ async def handle_bump_notification(message):
         timestamp=datetime.now()
     )
     await message.channel.send(embed=notice_embed)
-
-async def find_latest_bump(channel):
-    global latest_bump_time
-    async for message in channel.history(limit=100):
-        if message.author.id == 302050872383242240:
-            embeds = message.embeds
-            if embeds and "表示順をアップしたよ" in (embeds[0].description or ""):
-                latest_bump_time = message.created_at
-                break
-
-@bot.tree.command(name="latest", description="最新のBUMPの状態を確認します")
-async def latest_bump(interaction: discord.Interaction):
-    global latest_bump_time
-    channel = interaction.channel
-    await find_latest_bump(channel)
-
-    if latest_bump_time is None:
-        await interaction.response.send_message("まだBUMPは検知されていません。")
-        return
-
-    now = datetime.now()
-    elapsed_time = now - latest_bump_time
-    if elapsed_time >= timedelta(hours=2):
-        await interaction.response.send_message("BUMPが可能です！</bump:947088344167366698>")
-    else:
-        next_bump_time = latest_bump_time + timedelta(hours=2)
-        await interaction.response.send_message(
-            f"<t:{int(next_bump_time.timestamp())}:f> 頃に通知します"
-        )
 
 async def send_update_message():
     update_id =  71884248932155473
