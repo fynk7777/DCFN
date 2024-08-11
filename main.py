@@ -34,46 +34,24 @@ async def on_ready():
     check_members.start()
     await send_update_message()
 
-# 最新のBUMPを検知するメッセージコンテキストメニュー
-@bot.tree.context_menu(name="最新のBUMP")
-async def latest_bump_context(interaction: discord.Interaction, message: discord.Message):
-    global latest_bump_time
+async def handle_bump_notification(message):
+    master = datetime.now() + timedelta(hours=2)
+    notice_embed = discord.Embed(
+        title="BUMPを検知しました",
+        description=f"<t:{int(master.timestamp())}:f> 頃に通知します",
+        color=0x00BFFF,
+        timestamp=datetime.now()
+    )
+    await message.channel.send(embed=notice_embed)
+    await asyncio.sleep(7200)
+    notice_embed = discord.Embed(
+        title="BUMPが可能です！",
+        description="</bump:947088344167366698> でBUMPできます",
+        color=0x00BFFF,
+        timestamp=datetime.now()
+    )
+    await message.channel.send(embed=notice_embed)
 
-    # BUMPメッセージかどうかを確認
-    if message.author.id == 302050872383242240:
-        embeds = message.embeds
-        if embeds and len(embeds) > 0:
-            if "表示順をアップしたよ" in (embeds[0].description or ""):
-                latest_bump_time = message.created_at  # 最新のBUMPの時刻を記録
-                await handle_bump_notification(message, interaction)
-
-# BUMP検知と通知を処理する関数
-async def handle_bump_notification(message, interaction=None):
-    global latest_bump_time
-
-    if latest_bump_time:
-        notification_time = latest_bump_time + timedelta(hours=2)
-        notice_embed = discord.Embed(
-            title="BUMPを検知しました",
-            description=f"<t:{int(notification_time.timestamp())}:f> 頃に通知します",
-            color=0x00BFFF,
-            timestamp=datetime.now()
-        )
-        if interaction:
-            await interaction.response.send_message(embed=notice_embed, ephemeral=True)
-        await message.channel.send(embed=notice_embed)
-
-        await asyncio.sleep(7200)  # 2時間待機
-
-        current_time = datetime.now()
-        if current_time >= notification_time:
-            notice_embed = discord.Embed(
-                title="BUMPが可能です！",
-                description="</bump:947088344167366698> でBUMPできます",
-                color=0x00BFFF,
-                timestamp=current_time
-            )
-            await message.channel.send(embed=notice_embed)
 
 # 起動メッセージを送信する関数
 async def send_update_message():
@@ -124,8 +102,16 @@ async def check_members():
 # メッセージが送信されたときにリンクを検出する処理
 @bot.event
 async def on_message(message):
+    global channel_pairs, user_word_counts, respond_words
+    global latest_bump_time
     if message.author == bot.user:
         return
+
+    embeds = message.embeds
+    if embeds is not None and len(embeds) != 0:
+        if "表示順をアップしたよ" in (embeds[0].description or ""):
+            latest_bump_time = datetime.now()  # 最新のBUMPの時刻を記録
+            await handle_bump_notification(message)
 
     message_link_pattern = re.compile(r'https://discord.com/channels/(\d+)/(\d+)/(\d+)')
     match = message_link_pattern.search(message.content)
