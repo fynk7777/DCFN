@@ -1,6 +1,7 @@
 import discord
 import os
 import asyncio
+import re
 from datetime import datetime, timedelta
 from discord.ext import commands, tasks
 from keep_alive import keep_alive  # keep_aliveのインポート
@@ -20,6 +21,7 @@ latest_bump_time = None
 # BOTロールと参加者ロールの名前を定義
 BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
+
 
 # 起動時に動作する処理
 @bot.event
@@ -113,6 +115,58 @@ async def check_members():
                         await asyncio.sleep(1)  #1秒待機
                     else:
                         print(f"An error occurred: {e}")
+@bot.event
+async def on_message(message):
+    global channel_pairs, user_word_counts, respond_words
+    if message.author == bot.user:
+        return
+
+    # メッセージ内のリンクを検出
+    message_link_pattern = re.compile(r'https://discord.com/channels/(\d+)/(\d+)/(\d+)')
+    match = message_link_pattern.search(message.content)
+
+    if match:
+        guild_id = int(match.group(1))
+        channel_id = int(match.group(2))
+        message_id = int(match.group(3))
+
+        # メッセージを取得
+        guild = bot.get_guild(guild_id)
+        if guild:
+            channel = guild.get_channel(channel_id)
+            if channel:
+                try:
+                    target_message = await channel.fetch_message(message_id)
+                        # メッセージリンクのURLを作成
+                    message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+
+                        # 埋め込みメッセージを作成
+                    embed = discord.Embed(
+                        description=f"{target_message.content}\nFrom {channel.mention}",
+                        color=discord.Color.blue(),
+                        timestamp=target_message.created_at
+                        )
+                    author_avatar_url = target_message.author.display_avatar.url
+                    embed.set_author(name=target_message.author.display_name, icon_url=author_avatar_url)
+
+                    # 画像添付ファイルを追加
+                    for attachment in target_message.attachments:
+                        embed.set_image(url=attachment.url)
+
+                    # メッセージリンクを追加
+                    button = discord.ui.Button(label="メッセージ先はこちら", url=message_link)
+                    view = discord.ui.View()
+                    view.add_item(button)
+
+                    await message.channel.send(embed=embed, view=view)
+
+                except discord.NotFound:
+                    await message.channel.send('メッセージが見つかりませんでした。')
+                except discord.Forbidden:
+                    await message.channel.send('メッセージを表示する権限がありません。')
+                except discord.HTTPException as e:
+                    await message.channel.send(f'メッセージの取得に失敗しました: {e}')
+
 
 # BOTの実行
 try:
