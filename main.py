@@ -4,7 +4,7 @@ import asyncio
 import re
 from datetime import datetime, timedelta
 from discord.ext import commands, tasks
-from keep_alive import keep_alive  # keep_aliveのインポート
+from keep_alive import keep_alive
 
 # TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -31,11 +31,10 @@ async def on_ready():
         print(f'Synced {len(synced)} commands')
     except Exception as e:
         print(f'Error syncing commands: {e}')
-    check_members.start()  # この行を追加
-    # bakabonnpapa に DM を送信
+    check_members.start()
     await send_update_message()
 
-# メッセージコンテキストメニューを追加
+# 最新のBUMPを検知するメッセージコンテキストメニュー
 @bot.tree.context_menu(name="最新のBUMP")
 async def latest_bump_context(interaction: discord.Interaction, message: discord.Message):
     global latest_bump_time
@@ -43,34 +42,40 @@ async def latest_bump_context(interaction: discord.Interaction, message: discord
     # BUMPメッセージかどうかを確認
     if message.author.id == 302050872383242240:
         embeds = message.embeds
-        if embeds is not None and len(embeds) != 0:
+        if embeds and len(embeds) > 0:
             if "表示順をアップしたよ" in (embeds[0].description or ""):
                 latest_bump_time = message.created_at  # 最新のBUMPの時刻を記録
                 await handle_bump_notification(message, interaction)
 
+# BUMP検知と通知を処理する関数
 async def handle_bump_notification(message, interaction=None):
     global latest_bump_time
 
     if latest_bump_time:
-        master = latest_bump_time + timedelta(hours=2)
+        notification_time = latest_bump_time + timedelta(hours=2)
         notice_embed = discord.Embed(
             title="BUMPを検知しました",
-            description=f"<t:{int(master.timestamp())}:f> 頃に通知します",
+            description=f"<t:{int(notification_time.timestamp())}:f> 頃に通知します",
             color=0x00BFFF,
             timestamp=datetime.now()
         )
         if interaction:
-            await interaction.response.send_message(embed=notice_embed, ephemeral=True)  # ユーザーに一時的にメッセージを送信
-        await message.channel.send(embed=notice_embed)
-        await asyncio.sleep(7200)  # 2時間待機
-        notice_embed = discord.Embed(
-            title="BUMPが可能です！",
-            description="</bump:947088344167366698> でBUMPできます",
-            color=0x00BFFF,
-            timestamp=datetime.now()
-        )
+            await interaction.response.send_message(embed=notice_embed, ephemeral=True)
         await message.channel.send(embed=notice_embed)
 
+        await asyncio.sleep(7200)  # 2時間待機
+
+        current_time = datetime.now()
+        if current_time >= notification_time:
+            notice_embed = discord.Embed(
+                title="BUMPが可能です！",
+                description="</bump:947088344167366698> でBUMPできます",
+                color=0x00BFFF,
+                timestamp=current_time
+            )
+            await message.channel.send(embed=notice_embed)
+
+# 起動メッセージを送信する関数
 async def send_update_message():
     update_id = 1271884248932155473
     user_id = 1212687868603007067  # bakabonnpapa のユーザーID を設定する
@@ -92,7 +97,8 @@ async def send_update_message():
 
     await user.send(embed=embed)
 
-@tasks.loop(seconds=1)  # 1秒ごとにチェック
+# 参加者ロールの管理を行うタスク
+@tasks.loop(seconds=1)
 async def check_members():
     for guild in bot.guilds:
         bot_role = discord.utils.get(guild.roles, name=BOT_ROLE_NAME)
@@ -101,11 +107,9 @@ async def check_members():
             for member in guild.members:
                 try:
                     if bot_role in member.roles and participant_role in member.roles:
-                        # BOTロールがついている人から参加者ロールを削除
                         await member.remove_roles(participant_role)
                         print(f"Removed {PARTICIPANT_ROLE_NAME} role from {member.name}")
                     elif bot_role not in member.roles and participant_role not in member.roles:
-                        # BOTロールがついていない人に参加者ロールを追加
                         await member.add_roles(participant_role)
                         print(f"Added {PARTICIPANT_ROLE_NAME} role to {member.name}")
                 except discord.errors.Forbidden:
@@ -113,16 +117,16 @@ async def check_members():
                 except discord.HTTPException as e:
                     if e.status == 429:
                         print(f"Too Many Requests: {e}")
-                        await asyncio.sleep(1)  #1秒待機
+                        await asyncio.sleep(1)
                     else:
                         print(f"An error occurred: {e}")
 
+# メッセージが送信されたときにリンクを検出する処理
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
 
-    # メッセージ内のリンクを検出
     message_link_pattern = re.compile(r'https://discord.com/channels/(\d+)/(\d+)/(\d+)')
     match = message_link_pattern.search(message.content)
 
@@ -131,17 +135,14 @@ async def on_message(message):
         channel_id = int(match.group(2))
         message_id = int(match.group(3))
 
-        # メッセージを取得
         guild = bot.get_guild(guild_id)
         if guild:
             channel = guild.get_channel(channel_id)
             if channel:
                 try:
                     target_message = await channel.fetch_message(message_id)
-                    # メッセージリンクのURLを作成
                     message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
 
-                    # 埋め込みメッセージを作成
                     embed = discord.Embed(
                         description=f"{target_message.content}\nFrom {channel.mention}",
                         color=discord.Color.blue(),
@@ -150,11 +151,9 @@ async def on_message(message):
                     author_avatar_url = target_message.author.display_avatar.url
                     embed.set_author(name=target_message.author.display_name, icon_url=author_avatar_url)
 
-                    # 画像添付ファイルを追加
                     for attachment in target_message.attachments:
                         embed.set_image(url=attachment.url)
 
-                    # メッセージリンクを追加
                     button = discord.ui.Button(label="メッセージ先はこちら", url=message_link)
                     view = discord.ui.View()
                     view.add_item(button)
@@ -170,8 +169,7 @@ async def on_message(message):
 
 # BOTの実行
 try:
-    keep_alive()  # Webサーバーの起動
-    bot.run(TOKEN)  # BOTの実行
+    keep_alive()
+    bot.run(TOKEN)
 except Exception as e:
     print(f'エラーが発生しました: {e}')
-
