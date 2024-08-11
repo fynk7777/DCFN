@@ -63,12 +63,27 @@ async def handle_bump_notification(message, interaction=None):
     await message.channel.send(embed=notice_embed)
 
 async def send_update_message():
-    update_id =  71884248932155473
+    update_id = 1271884248932155473
     user_id = 1212687868603007067  # bakabonnpapa のユーザーID を設定する
     user = await bot.fetch_user(user_id)
-    update = await bot.fetch_channel(update_id)
-    await user.send("アップデートしました!!")
-    await update.send("アップデートしました!!")
+
+    # 埋め込みメッセージの作成
+    embed = discord.Embed(
+        title="BOTが起動しました！",
+        description="BOT has been started!",
+        color=0x00BFFF,
+        timestamp=datetime.now()
+    )
+
+    try:
+        update = await bot.fetch_channel(update_id)
+        await update.send(embed=embed)
+    except discord.errors.NotFound:
+        print(f"Error: Channel with ID {update_id} was not found.")
+
+    await user.send(embed=embed)
+
+
 
 # BOTの実行
 try:
