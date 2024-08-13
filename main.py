@@ -25,7 +25,7 @@ PARTICIPANT_ROLE_NAME = "😀参加者"
 # 起動時に動作する処理
 @bot.event
 async def on_ready():
-    print(f'{bot.user} としてログインしました^o^')
+    print(f'{bot.user} としてログインしました')
     try:
         synced = await bot.tree.sync()
         print(f'Synced {len(synced)} commands')
