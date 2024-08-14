@@ -33,6 +33,7 @@ async def on_ready():
         print(f'Error syncing commands: {e}')
     check_members.start()
     await send_update_message()
+    await bot.change_presence(activity=discord.Game(name="/helpを使ってみてください"))
 
 async def handle_bump_notification(message):
     master = datetime.now() + timedelta(hours=2)
