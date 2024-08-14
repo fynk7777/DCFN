@@ -1,7 +1,8 @@
-import discord
+from discord import Status, app_commands
 import os
 import asyncio
 import re
+import discord
 from datetime import datetime, timedelta
 from discord.ext import commands, tasks
 from keep_alive import keep_alive
@@ -22,6 +23,8 @@ latest_bump_time = None
 BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
 
+ALLOWED_USERS = [ 1212687868603007067 ]  # ユーザーIDを追加
+
 # 起動時に動作する処理
 @bot.event
 async def on_ready():
@@ -33,7 +36,7 @@ async def on_ready():
         print(f'Error syncing commands: {e}')
     check_members.start()
     await send_update_message()
-    await bot.change_presence(activity=discord.Game(name="/helpを使ってみてください"))
+    await bot.change_presence(activity=discord.Game(name="このサーバー専用BOTです"))
 
 async def handle_bump_notification(message):
     master = datetime.now() + timedelta(hours=2)
@@ -153,6 +156,15 @@ async def on_message(message):
                     await message.channel.send('メッセージを表示する権限がありません。')
                 except discord.HTTPException as e:
                     await message.channel.send(f'メッセージの取得に失敗しました: {e}')
+
+@bot.tree.command(name="status",description="ステータスを設定するコマンドです")
+@app_commands.describe(text="ステータスを設定します")
+async def text(interaction: discord.Interaction, text: str):
+    if interaction.user.id in ALLOWED_USERS:
+        await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=f'{text}'))
+        await interaction.response.send_message(f'ステータスを「{text}」に設定しました。',ephemeral=True)
+    else:
+        await interaction.response.send_message('このコマンドを実行する権限がありません。', ephemeral=True)
 
 # BOTの実行
 try:
