@@ -158,7 +158,7 @@ async def on_message(message):
                     await message.channel.send(f'メッセージの取得に失敗しました: {e}')
 
     # 「r!test」が送信された場合に「あ」と返す
-    if message.content == "r!test":
+    if message.content == "b!test" or message.content == "f!test":
         await message.channel.send("GitHubで起動されています")
 
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
