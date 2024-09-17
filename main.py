@@ -157,6 +157,10 @@ async def on_message(message):
                 except discord.HTTPException as e:
                     await message.channel.send(f'メッセージの取得に失敗しました: {e}')
 
+    # 「r!test」が送信された場合に「あ」と返す
+    if message.content == "r!test":
+        await message.channel.send("GitHubで起動されています")
+
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
 @app_commands.describe(text="ステータスを設定します")
 async def text(interaction: discord.Interaction, text: str):
