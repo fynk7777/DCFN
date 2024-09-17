@@ -161,6 +161,17 @@ async def on_message(message):
     if message.content == "b!test" or message.content == "f!test":
         await message.channel.send("GitHubで起動されています")
 
+    if "f!status" in message.content:
+        if interaction.user.id in ALLOWED_USERS:
+            match = re.search(r'f!status (\S+)', text)
+            if match:
+                sutatus = match.group(1)  # 決まっていない文字列を返す
+                await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=f'{text}'))
+                await interaction.response.send_message(f'ステータスを「{text}」に設定しました。',ephemeral=True)
+        else:
+            await interaction.response.send_message('このコマンドを実行する権限がありません。', ephemeral=True)
+
+
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
 @app_commands.describe(text="ステータスを設定します")
 async def text(interaction: discord.Interaction, text: str):
