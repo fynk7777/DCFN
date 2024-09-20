@@ -162,6 +162,10 @@ async def on_message(message):
     if message.content == "b!test" or message.content == "f!test":
         await message.channel.send("GitHubで起動されています")
 
+    if isinstance(message.channel, discord.TextChannel) and message.channel.is_news():
+        # メッセージを公開
+        await message.publish()
+
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
 @app_commands.describe(text="ステータスを設定します")
 async def text(interaction: discord.Interaction, text: str):
