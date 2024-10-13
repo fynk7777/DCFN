@@ -6,6 +6,9 @@ import discord
 from datetime import datetime, timedelta
 from discord.ext import commands, tasks
 from keep_alive import keep_alive
+from discord.ui import Button, View
+
+from keep_alive import keep_alive
 
 # TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
