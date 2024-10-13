@@ -15,6 +15,9 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Intentsの設定
 intents = discord.Intents.all()
+intents = discord.Intents.default()
+intents.message_content = True
+intents.guilds = True
 
 # Botクライアントの初期化
 bot = commands.Bot(command_prefix='!', intents=intents)
