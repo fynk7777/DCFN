@@ -215,6 +215,43 @@ async def on_message(message):
         # メッセージを公開
         await message.publish()
 
+@bot.tree.command(name="bump_time", description="最後にbumpした時間を指定し、その2時間後に通知を送信します")
+@app_commands.describe(hour="最後にbumpした時間の時", minutes="最後にbumpした時間の分")
+async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
+    global latest_bump_time
+
+    now = datetime.now()
+    bump_time = now.replace(hour=hour, minute=minutes, second=0, microsecond=0)
+
+    # BUMPの時間が現在よりも過去の場合でも、2時間後の未来時間を計算する
+    bump_time_with_offset = bump_time + timedelta(hours=2)
+
+    if bump_time_with_offset < now:
+        # 2時間後が過去の場合、翌日の時間として処理
+        bump_time_with_offset += timedelta(days=1)
+
+    # 2時間後の待機時間を計算
+    time_diff = bump_time_with_offset - now
+    minutes_diff = int(time_diff.total_seconds() // 60)
+    minutes_diff = minutes_diff - 540
+    total_seconds = int(time_diff.total_seconds())
+    total_seconds = total_seconds - 32400
+
+    print(total_seconds)
+
+    await interaction.response.send_message(f"最後にBUMPした時間: {hour}:{minutes} に基づき、約{minutes_diff + 1}分後に通知を送信します。", ephemeral=True)
+
+    await asyncio.sleep(total_seconds)
+
+    # 通知を送信
+    notice_embed = discord.Embed(
+        title="BUMPが可能です！",
+        description="</bump:947088344167366698> でBUMPできます",
+        color=0x00BFFF,
+        timestamp=datetime.now()
+    )
+    await interaction.channel.send(embed=notice_embed)
+
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
 @app_commands.describe(text="ステータスを設定します")
 async def text(interaction: discord.Interaction, text: str):
