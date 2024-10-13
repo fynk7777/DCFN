@@ -60,7 +60,7 @@ class CloseThreadView(View):
             new_name = f"【CLOSED】{interaction.channel.name}"
             embed = discord.Embed(title="CLOSEしました",description="",color=0xff0000)
             await interaction.channel.send(embed=embed)
-            await interaction.channel.close
+            await interaction.channel.close()
             await interaction.channel.edit(name=new_name, archived=True, locked=True)
         else:
             await interaction.response.send_message("この操作はできません。", ephemeral=True)
