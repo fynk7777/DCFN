@@ -23,6 +23,9 @@ latest_bump_time = None
 BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
 
+ROLE_ID = 1267947998374268939  # 特定のロールID
+TARGET_CHANNELS = [1272888871860047922, 1272202112003997726, ]  # 特定のチャンネルIDリスト(threadのやつ)
+
 ALLOWED_USERS = [ 1212687868603007067 ]  # ユーザーIDを追加
 
 # 起動時に動作する処理
@@ -38,6 +41,46 @@ async def on_ready():
     await send_update_message()
     await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=f'DCFN'))
 
+class CloseThreadView(View):
+    def __init__(self, author_id):
+        super().__init__(timeout=None)
+        self.author_id = author_id
+
+    @discord.ui.button(label="CLOSE", style=discord.ButtonStyle.red)
+    async def close_thread(self, interaction: discord.Interaction, button: Button):
+        # スレ主か指定ロールを持つ人のみが使用可能
+        if interaction.user.id == self.author_id or ROLE_ID in [role.id for role in interaction.user.roles]:
+            # スレッドの名前を変更
+            new_name = f"【CLOSED】{interaction.channel.name}"
+            embed = discord.Embed(title="CLOSEしました",description="",color=0xff0000)
+            await interaction.channel.send(embed=embed)
+            await interction.thread.close
+            await interaction.channel.edit(name=new_name, archived=True, locked=True)
+        else:
+            await interaction.response.send_message("この操作はできません。", ephemeral=True)
+
+class OpenThreadView(View):
+    def __init__(self, author_id):
+        super().__init__(timeout=None)
+        self.author_id = author_id
+
+@bot.event
+async def on_thread_create(thread):
+    print(f"スレッドが作成されました: {thread.name}, チャンネルID: {thread.parent_id}")
+    # 指定されたチャンネルでのみ動作
+    if thread.parent_id in TARGET_CHANNELS:
+        async for message in thread.history(limit=1, oldest_first=True):
+            creator_id = message.author.id
+            creator_mention = f"<@{creator_id}>"
+
+            role_mention = f"<@&{ROLE_ID}>"
+            embed = discord.Embed(description=f"{creator_mention} さん\n運営の対応までしばらくお待ちください。", color=0x00ff00)
+            view = CloseThreadView(author_id=creator_id)
+
+            await thread.send(content=role_mention, embed=embed, view=view)
+            break
+    else:
+        print("検知されたスレッドは指定されたチャンネルではありません。")
 
 async def handle_bump_notification(message):
     master = datetime.now() + timedelta(hours=2)
