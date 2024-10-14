@@ -29,8 +29,8 @@ latest_bump_time = None
 BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
 
-ROLE_ID = 1272695192834674689  # 特定のロールID
-TARGET_CHANNELS = [1274918110855565312, ]  # 特定のチャンネルIDリスト(threadのやつ)
+ROLE_ID = 1267947998374268939  # 特定のロールID
+TARGET_CHANNELS = [1272888871860047922, 1272202112003997726, ]  # 特定のチャンネルIDリスト(threadのやつ)
 
 ALLOWED_USERS = [ 1212687868603007067 ]  # ユーザーIDを追加
 
@@ -109,7 +109,7 @@ async def handle_bump_notification(message):
 
 # 起動メッセージを送信する関数
 async def send_update_message():
-    update_id = 1285639850204074014
+    update_id = 1271884248932155473
     user_id = 1212687868603007067  # bakabonnpapa のユーザーID を設定する
     user = await bot.fetch_user(user_id)
 
