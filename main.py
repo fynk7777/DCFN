@@ -40,6 +40,7 @@ async def on_ready():
     print(f'{bot.user} としてログインしました')
     try:
         synced = await bot.tree.sync()
+        await bot.tree.sync()
         print(f'Synced {len(synced)} commands')
     except Exception as e:
         print(f'Error syncing commands: {e}')
@@ -216,6 +217,8 @@ async def on_message(message):
         await message.publish()
 
 @bot.tree.command(name="bump_time", description="最後にbumpした時間を指定し、その2時間後に通知を送信します")
+async def bump_time(interaction: discord.Interaction):
+    await interaction.response.defer()
 @app_commands.describe(hour="最後にbumpした時間の時", minutes="最後にbumpした時間の分")
 async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
     global latest_bump_time
