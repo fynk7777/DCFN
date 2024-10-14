@@ -1,4 +1,4 @@
-from discord import Status, app_commands
+from discord import app_commands
 import os
 import asyncio
 import re
@@ -8,7 +8,6 @@ from discord.ext import commands, tasks
 from keep_alive import keep_alive
 from discord.ui import Button, View
 
-from keep_alive import keep_alive
 
 # TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -18,6 +17,7 @@ intents = discord.Intents.all()
 intents = discord.Intents.default()
 intents.message_content = True
 intents.guilds = True
+intents.members = True  # メンバー関連のイベントを有効にする
 
 # Botクライアントの初期化
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -29,8 +29,8 @@ latest_bump_time = None
 BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
 
-ROLE_ID = 1267947998374268939  # 特定のロールID
-TARGET_CHANNELS = [1272888871860047922, 1272202112003997726, ]  # 特定のチャンネルIDリスト(threadのやつ)
+ROLE_ID = 1272695192834674689  # 特定のロールID
+TARGET_CHANNELS = [1274918110855565312, ]  # 特定のチャンネルIDリスト(threadのやつ)
 
 ALLOWED_USERS = [ 1212687868603007067 ]  # ユーザーIDを追加
 
@@ -45,7 +45,7 @@ async def on_ready():
         print(f'Error syncing commands: {e}')
     check_members.start()
     await send_update_message()
-    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name=f'DCFN'))
+    await bot.change_presence(status=discord.Status.online, activity=discord.CustomActivity(name='DCFN'))
 
 class CloseThreadView(View):
     def __init__(self, author_id):
@@ -109,7 +109,7 @@ async def handle_bump_notification(message):
 
 # 起動メッセージを送信する関数
 async def send_update_message():
-    update_id = 1271884248932155473
+    update_id = 1285639850204074014
     user_id = 1212687868603007067  # bakabonnpapa のユーザーID を設定する
     user = await bot.fetch_user(user_id)
 
@@ -224,6 +224,7 @@ async def text(interaction: discord.Interaction, text: str):
     else:
         await interaction.response.send_message('このコマンドを実行する権限がありません。', ephemeral=True)
 
+
 @bot.tree.command(name="bump_time", description="最後にbumpした時間を指定し、その2時間後に通知を送信します")
 @app_commands.describe(hour="最後にbumpした時間の時", minutes="最後にbumpした時間の分")
 async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
@@ -252,6 +253,7 @@ async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
         timestamp=datetime.now()
     )
     await interaction.channel.send(embed=notice_embed)
+
 
 
 # BOTの実行
