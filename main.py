@@ -130,7 +130,7 @@ async def send_update_message():
     await user.send(embed=embed)
 
 # 参加者ロールの管理を行うタスク
-@tasks.loop(seconds=1)
+@tasks.loop(seconds=5)
 async def check_members():
     for guild in bot.guilds:
         bot_role = discord.utils.get(guild.roles, name=BOT_ROLE_NAME)
@@ -149,7 +149,7 @@ async def check_members():
                 except discord.HTTPException as e:
                     if e.status == 429:
                         print(f"Too Many Requests: {e}")
-                        await asyncio.sleep(1)
+                        await asyncio.sleep(5)
                     else:
                         print(f"An error occurred: {e}")
 
