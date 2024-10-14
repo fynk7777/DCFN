@@ -1,6 +1,6 @@
 # [DCFNサーバー](https://discord.gg/qFwh4CCb78)
 
-## これはフォートナイトに関することをみんなでしよう!!と言ったdiscordサーバーです
+## __これはフォートナイトに関することをみんなでしよう!!と言ったdiscordサーバーです__
 
 そしてこちらのリポジトリはそんなサーバーを支える「DCFNサーバー公式BOT」です。
 
@@ -10,9 +10,9 @@
 https://discord.gg/qFwh4CCb78
 
 
-# fynk7777｜bakabonnpapa
+## fynk7777｜bakabonnpapa
 twitter: https://x.com/fynk7777
 github: https://github.com/fynk7777
 
-# DCFNサーバー
+## DCFNサーバー
 twitter: https://x.com/DCFN_Fortnite
