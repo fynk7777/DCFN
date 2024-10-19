@@ -159,6 +159,8 @@ async def on_message(message):
     server_id = message.guild.id
     message_content = message.content
     channel = message.channel
+    user = message.author
+    user_id = user.id
     global channel_pairs, user_word_counts, respond_words
     global latest_bump_time
     if message.author == bot.user:
