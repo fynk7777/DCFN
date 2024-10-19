@@ -257,9 +257,9 @@ async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
     # 2時間後の待機時間を計算
     time_diff = bump_time_with_offset - now
     minutes_diff = int(time_diff.total_seconds() // 60)
-    minutes_diff = minutes_diff - 540
+    minutes_diff = minutes_diff - 539
     total_seconds = int(time_diff.total_seconds())
-    total_seconds = total_seconds - 32400
+    total_seconds = total_seconds - 32340
     print(total_seconds)
     await interaction.response.send_message(f"最後にBUMPした時間: {hour}:{minutes} に基づき、約{minutes_diff + 1}分後に通知を送信します。", ephemeral=True)
     await asyncio.sleep(total_seconds)
