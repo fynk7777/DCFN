@@ -156,6 +156,7 @@ async def check_members():
 # メッセージが送信されたときにリンクを検出する処理
 @bot.event
 async def on_message(message):
+    message_content = message.content
     channel = message.channel
     global channel_pairs, user_word_counts, respond_words
     global latest_bump_time
