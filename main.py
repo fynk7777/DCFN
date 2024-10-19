@@ -208,7 +208,7 @@ async def on_message(message):
                     await message.channel.send(f'メッセージの取得に失敗しました: {e}')
 
     # 「r!test」が送信された場合に「あ」と返す 
-    if message_content == "r!bot stop":
+    if message_content == "DCFN!bot stop":
         if server_id == 1267365569678802965:
             if user_id == 1212687868603007067:
                 embed = discord.Embed(title='BOTが停止しました^^',description="起動させるにはRenderでClear Cashe & Deployをする必要があります",color=0xff0000,timestamp=datetime.utcnow())
@@ -217,13 +217,13 @@ async def on_message(message):
             else:
                 await message.channel.send("あなたにはこの操作を行う権限がありません。")
     # 「r!test」が送信された場合に「あ」と返す
-    elif message.content == "b!test" or message.content == "f!test":
+    elif message.content == "b!test" or message.content == "DCFN!test":
         await message.channel.send("GitHubで起動されています")
     # 「r!vsc」が送信された場合にvscのリンクを返す
-    elif message.content == "f!vsc":
+    elif message.content == "DCFN!vsc":
         if user_id == 1212687868603007067:
             await message.channel.send("https://vscode.dev/github/fynk7777/fortnite-server?vscode-lang=ja")
-    elif message.content == "f!link":
+    elif message.content == "DCFN!link":
         await message.channel.send("https://github.com/fynk7777/DCFN")
 
     if isinstance(message.channel, discord.TextChannel) and message.channel.is_news():
