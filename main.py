@@ -156,6 +156,7 @@ async def check_members():
 # メッセージが送信されたときにリンクを検出する処理
 @bot.event
 async def on_message(message):
+    server_id = message.guild.id
     message_content = message.content
     channel = message.channel
     global channel_pairs, user_word_counts, respond_words
@@ -209,8 +210,7 @@ async def on_message(message):
                 except discord.HTTPException as e:
                     await message.channel.send(f'メッセージの取得に失敗しました: {e}')
 
-    # 「r!test」が送信された場合に「あ」と返す 
-    if message_content == "DCFN!bot stop":
+    if message.content == "DCFN!bot stop":
         if server_id == 1267365569678802965:
             if user_id == 1212687868603007067:
                 embed = discord.Embed(title='BOTが停止しました^^',description="起動させるにはRenderでClear Cashe & Deployをする必要があります",color=0xff0000,timestamp=datetime.utcnow())
