@@ -438,15 +438,19 @@ async def on_voice_state_update(member, before, after):
     user = member
     user_name = user.name
     user_avatar = user.avatar
-    if after.channel == None:
-        channel = before.channel
-    else:
-        channel = after.channel
-    channel_id = channel.id
-    channel_name = channel.name
+    channel_id = None
+    channel_name = None
     server_id = user.guild.id
     before_channel = before.channel
     after_channel = after.channel
+
+    # 変更後のチャンネルが存在する場合のみ channel_id と channel_name を取得
+    if after_channel is not None:
+        channel_id = after_channel.id
+        channel_name = after_channel.name
+    else:
+        channel_id = before_channel.id
+        channel_name = after_channel.name
 
     if before_channel != after_channel:
         if server_id == 1267365569678802965:
@@ -457,11 +461,13 @@ async def on_voice_state_update(member, before, after):
                 message_Embed = discord.Embed(
                     title=f"{user_name}",
                     color=0xff0000,
-                    description=f"{user_name}が<#{channel_id}>から退出しました",
+                    description=f"{user_name}が<#{before_channel.id}>から退出しました",
                     timestamp=datetime.now(),
                 )
                 message_Embed.set_thumbnail(url=f"{user_avatar}")
-                message_Embed.set_footer(text=f"{channel_name}")
+                message_Embed.set_footer(text=f"{before_channel.name}")
+                await send_channel.send(embed=message_Embed)
+
             if after.channel is not None:
                 message_Embed = discord.Embed(
                     title=f"{user_name}",
@@ -471,12 +477,8 @@ async def on_voice_state_update(member, before, after):
                 )
                 message_Embed.set_thumbnail(url=f"{user_avatar}")
                 message_Embed.set_footer(text=f"{channel_name}")
-            else:
-                print("a")
-        else:
-            print("b")
-    else:
-        print("c")
+                await send_channel.send(embed=message_Embed)
+
 
 # BOTの実行
 try:
