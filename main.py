@@ -162,7 +162,6 @@ async def on_message(message):
     user_id = user.id
     message_id = message.id
     guild = message.guild
-    guild_id = guild.id
     channel_name = channel.name
     channel_id = channel.id
     user_name = user.name
@@ -325,7 +324,7 @@ async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
     await interaction.channel.send(embed=notice_embed)
 
 @bot.event
-async def delete_message_delete(message):
+async def on_message_delete(message):
     message_content = message.content
     message_id = message.id
     guild_id = message.guild.id
