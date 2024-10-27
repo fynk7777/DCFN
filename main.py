@@ -438,7 +438,10 @@ async def on_voice_state_update(member, before, after):
     user = member
     user_name = user.name
     user_avatar = user.avatar
-    channel = after.channel
+    if after.channel == None:
+        channel = before.channel
+    else:
+        channel = after.channel
     channel_id = channel.id
     channel_name = channel.name
     server_id = user.guild.id
