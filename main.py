@@ -467,6 +467,12 @@ async def on_voice_state_update(member, before, after):
                 )
                 message_Embed.set_thumbnail(url=f"{user_avatar}")
                 message_Embed.set_footer(text=f"{channel_name}")
+            else:
+                print("a")
+        else:
+            print("b")
+    else:
+        print("c")
 
 # BOTの実行
 try:
