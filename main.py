@@ -172,7 +172,7 @@ async def on_message(message):
     
 
     if server_id == 1235075709026697246:
-        if chennel_id == 1271568627728121927:
+        if channel_id == 1271568627728121927:
             send_channel_id = 1299912523062972507
             send_channel = await bot.fetch_channel(send_channel_id)
             if file_url:
