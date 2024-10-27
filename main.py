@@ -153,17 +153,16 @@ async def check_members():
                     else:
                         print(f"An error occurred: {e}")
 
-# メッセージが送信されたときにリンクを検出する処理
 @bot.event
 async def on_message(message):
     message_content = message.content
-    channel = message.channel
-    user = message.author
-    user_id = user.id
     message_id = message.id
     guild = message.guild
+    channel = message.channel
     channel_name = channel.name
     channel_id = channel.id
+    user = message.author
+    user_id = user.id
     user_name = user.name
     user_avatar = user.avatar
     server_id = message.guild.id
@@ -185,7 +184,7 @@ async def on_message(message):
         else:
             send_channel_id = 1299912523062972507
             send_channel = await bot.fetch_channel(send_channel_id)
-            target_message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+            target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
             message_Embed = discord.Embed(
                 title=f"{user_name}",
                 description=f"{message_content}",
@@ -227,17 +226,17 @@ async def on_message(message):
     match = message_link_pattern.search(message.content)
 
     if match:
-        guild_id = int(match.group(1))
+        server_id = int(match.group(1))
         channel_id = int(match.group(2))
         message_id = int(match.group(3))
 
-        guild = bot.get_guild(guild_id)
+        guild = bot.get_guild(server_id)
         if guild:
             channel = guild.get_channel(channel_id)
             if channel:
                 try:
                     target_message = await channel.fetch_message(message_id)
-                    message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+                    message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
 
                     embed = discord.Embed(
                         description=f"{target_message.content}\nFrom {channel.mention}",
@@ -327,7 +326,6 @@ async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
 async def on_message_delete(message):
     message_content = message.content
     message_id = message.id
-    guild_id = message.guild.id
     channel = message.channel
     channel_name = channel.name
     channel_id = channel.id
@@ -341,7 +339,7 @@ async def on_message_delete(message):
     if server_id == 1235075709026697246:
         send_channel_id = 1294615034059689994
         send_channel = await bot.fetch_channel(send_channel_id)
-        target_message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+        target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
         message_Embed = discord.Embed(
             title=f"{user_name}",
             description=f"{message_content}",
@@ -364,7 +362,6 @@ async def on_message_edit(before, after):
     before_content = before.content
     message_content = after.content
     message_id = after.id
-    guild_id = after.guild.id
     channel = after.channel
     channel_name = channel.name
     channel_id = channel.id
@@ -376,7 +373,7 @@ async def on_message_edit(before, after):
     if server_id == 1235075709026697246:
         send_channel_id = 1299912551928430642
         send_channel = await bot.fetch_channel(send_channel_id)
-        target_message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+        target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
         message_Embed = discord.Embed(
             title=f"{user_name}",
             description=f"{before_content} \n<:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742>\n{message_content}",
