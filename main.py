@@ -391,7 +391,7 @@ async def on_message_edit(before, after):
 
 @bot.event 
 async def on_member_join(member):
-    user = member.author
+    user = member
     user_name = user.name
     user_avatar = user.avatar
     user_id = user.id
@@ -413,7 +413,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_member_remove(member):
-    user = member.author
+    user = member
     user_name = user.name
     user_avatar = user.avatar
     user_id = user.id
