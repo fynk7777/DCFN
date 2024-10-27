@@ -450,7 +450,7 @@ async def on_voice_state_update(member, before, after):
         channel_name = after_channel.name
     else:
         channel_id = before_channel.id
-        channel_name = after_channel.name
+        channel_name = before_channel.name
 
     if before_channel != after_channel:
         if server_id == 1267365569678802965:
