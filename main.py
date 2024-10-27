@@ -156,7 +156,6 @@ async def check_members():
 # メッセージが送信されたときにリンクを検出する処理
 @bot.event
 async def on_message(message):
-    server_id = message.guild.id
     message_content = message.content
     channel = message.channel
     user = message.author
