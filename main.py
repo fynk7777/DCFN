@@ -171,7 +171,7 @@ async def on_message(message):
     message_embeds = message.embeds
     
 
-    if server_id == 1235075709026697246:
+    if server_id == 1267365569678802965:
         if channel_id == 1271568627728121927:
             send_channel_id = 1299927508736540754
             send_channel = await bot.fetch_channel(send_channel_id)
@@ -336,7 +336,7 @@ async def on_message_delete(message):
     file = message.attachments
     file_url = file[0].url if file else None
 
-    if server_id == 1235075709026697246:
+    if server_id == 1267365569678802965:
         send_channel_id = 1294615034059689994
         send_channel = await bot.fetch_channel(send_channel_id)
         target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
@@ -370,7 +370,7 @@ async def on_message_edit(before, after):
     user_avatar = user.avatar
     server_id = after.guild.id
 
-    if server_id == 1235075709026697246:
+    if server_id == 1267365569678802965:
         send_channel_id = 1299912551928430642
         send_channel = await bot.fetch_channel(send_channel_id)
         target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
@@ -399,7 +399,7 @@ async def on_member_join(member):
     global_name = user.global_name
     server_id = user.guild.id
 
-    if server_id == 1235075709026697246:
+    if server_id == 1267365569678802965:
         send_channel_id = 1299912609209909299
         send_channel = await bot.fetch_channel(send_channel_id)
         message_Embed = discord.Embed(
@@ -421,7 +421,7 @@ async def on_member_remove(member):
     global_name = user.global_name
     server_id = user.guild.id
 
-    if server_id == 1235075709026697246:
+    if server_id == 1267365569678802965:
         send_channel_id = 1299912643516094464
         send_channel = await bot.fetch_channel(send_channel_id)
         message_Embed = discord.Embed(
@@ -445,7 +445,7 @@ async def voice_state_update(member, before, after):
     after = after.channel
 
     if before != after:
-        if server_id == 1235075709026697246:
+        if server_id == 1267365569678802965:
             send_channel_id = 1299912657368911903
             send_channel = await bot.fetch_channel(send_channel_id)
 
