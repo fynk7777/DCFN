@@ -434,7 +434,7 @@ async def on_member_remove(member):
         await send_channel.send(embed=message_Embed)
 
 @bot.event
-async def voice_state_update(member, before, after):
+async def on_voice_state_update(member, before, after):
     user = member.author
     user_name = user.name
     user_avatar = user.avatar
