@@ -435,7 +435,7 @@ async def on_member_remove(member):
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    user = member.author
+    user = member
     user_name = user.name
     user_avatar = user.avatar
     channel_id = after.channel.id
