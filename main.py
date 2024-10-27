@@ -337,7 +337,7 @@ async def on_message_delete(message):
     file_url = file[0].url if file else None
 
     if server_id == 1267365569678802965:
-        send_channel_id = 1294615034059689994
+        send_channel_id = 1299912537063559278
         send_channel = await bot.fetch_channel(send_channel_id)
         target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
         message_Embed = discord.Embed(
@@ -441,10 +441,10 @@ async def on_voice_state_update(member, before, after):
     channel_id = after.channel.id
     channel_name = after.channel.name
     server_id = user.guild.id
-    before = before.channel
-    after = after.channel
+    before_channel = before.channel
+    after_channel = after.channel
 
-    if before != after:
+    if before_channel != after_channel:
         if server_id == 1267365569678802965:
             send_channel_id = 1299912657368911903
             send_channel = await bot.fetch_channel(send_channel_id)
