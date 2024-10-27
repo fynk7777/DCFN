@@ -161,6 +161,18 @@ async def on_message(message):
     channel = message.channel
     user = message.author
     user_id = user.id
+    message_id = message.id
+    guild = message.guild
+    guild_id = guild.id
+    channel_name = channel.name
+    channel_id = channel.id
+    user_name = user.name
+    user_avatar = user.avatar
+    server_id = message.guild.id
+    file = message.attachments
+    file_url = file[0].url if file else None
+    message_embeds = message.embeds
+    
     global channel_pairs, user_word_counts, respond_words
     global latest_bump_time
     if message.author == bot.user:
