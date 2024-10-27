@@ -173,6 +173,37 @@ async def on_message(message):
     file_url = file[0].url if file else None
     message_embeds = message.embeds
     
+
+    if server_id == 1235075709026697246:
+        send_channel_id = 1299912523062972507
+        send_channel = await bot.fetch_channel(send_channel_id)
+        target_message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+        message_Embed = discord.Embed(
+            title=f"{user_name}",
+            description=f"{message_content}",
+            color=0x00ff00 ,
+            timestamp=datetime.now()
+        )
+        message_Embed.set_thumbnail(url=f"{user_avatar}")
+        message_Embed.set_footer(text=f"{channel_name}")
+
+        view = discord.ui.View(timeout=None)
+        view.add_item(
+            discord.ui.Button(
+                label="メッセージ先はこちら",
+                style=discord.ButtonStyle.link,
+                url=target_message_link
+            )
+        )
+
+        await send_channel.send(embed=message_Embed , view=view)
+        if file_url:
+            await send_channel.send(file_url)
+
+        if message.embeds:
+            original_embed = message.embeds[0]  # 最初の埋め込みを取得
+            await send_channel.send(embed=original_embed)
+
     global channel_pairs, user_word_counts, respond_words
     global latest_bump_time
     if message.author == bot.user:
@@ -284,7 +315,153 @@ async def bump_time(interaction: discord.Interaction, hour: int, minutes: int):
     )
     await interaction.channel.send(embed=notice_embed)
 
+@bot.event
+async def delete_message_delete(message):
+    message_content = message.content
+    message_id = message.id
+    guild_id = message.guild.id
+    channel = message.channel
+    channel_name = channel.name
+    channel_id = channel.id
+    user = message.author
+    user_name = user.name
+    user_avatar = user.avatar
+    server_id = message.guild.id
+    file = message.attachments
+    file_url = file[0].url if file else None
 
+    if server_id == 1235075709026697246:
+        send_channel_id = 1294615034059689994
+        send_channel = await bot.fetch_channel(send_channel_id)
+        target_message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+        message_Embed = discord.Embed(
+            title=f"{user_name}",
+            description=f"{message_content}",
+            color=0xff0000 ,
+            timestamp=datetime.now()
+        )
+        message_Embed.set_thumbnail(url=f"{user_avatar}")
+        message_Embed.set_footer(text=f"{channel_name}")
+        
+        await send_channel.send(embed=message_Embed)
+        if file_url:
+            await send_channel.send(file_url)
+            
+        if message.embeds:
+            original_embed = message.embeds[0]  # 最初の埋め込みを取得
+            await send_channel.send(embed=original_embed)
+
+@bot.event
+async def on_message_edit(before, after):
+    before_content = before.content
+    message_content = after.content
+    message_id = after.id
+    guild_id = after.guild.id
+    channel = after.channel
+    channel_name = channel.name
+    channel_id = channel.id
+    user = after.author
+    user_name = user.name
+    user_avatar = user.avatar
+    server_id = after.guild.id
+
+    if server_id == 1235075709026697246:
+        send_channel_id = 1299912551928430642
+        send_channel = await bot.fetch_channel(send_channel_id)
+        target_message_link = f"https://discord.com/channels/{guild_id}/{channel_id}/{message_id}"
+        message_Embed = discord.Embed(
+            title=f"{user_name}",
+            description=f"{before_content} \n<:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742><:down_arrow_bot:1299916586106224742>\n{message_content}",
+            color=0xffff00 ,
+            timestamp=datetime.now()
+        )
+        message_Embed.set_thumbnail(url=f"{user_avatar}")
+        message_Embed.set_footer(text=f"{channel_name}")
+
+        await send_channel.send(embed=message_Embed)
+
+        if after.embeds:
+            original_embed = after.embeds[0]  # 最初の埋め込みを取得
+            await send_channel.send(embed=original_embed)
+
+@bot.event 
+async def on_member_join(member):
+    user = member.author
+    user_name = user.name
+    user_avatar = user.avatar
+    user_id = user.id
+    create = user.created_at
+    global_name = user.global_name
+    server_id = user.guild.id
+
+    if server_id == 1235075709026697246:
+        send_channel_id = 1299912609209909299
+        send_channel = await bot.fetch_channel(send_channel_id)
+        message_Embed = discord.Embed(
+            title=f"{user_name}",
+            color=0x00ff00,
+            description=f"name：{user_name}\nid：{user_id}\ncreated_at：{create}\nglobal_name：{global_name}",
+            timestamp=datetime.now(),
+        )
+        message_Embed.set_thumbnail(url=f"{user_avatar}")
+        await send_channel.send(embed=message_Embed)
+
+@bot.event
+async def on_member_remove(member):
+    user = member.author
+    user_name = user.name
+    user_avatar = user.avatar
+    user_id = user.id
+    create = user.created_at
+    global_name = user.global_name
+    server_id = user.guild.id
+
+    if server_id == 1235075709026697246:
+        send_channel_id = 1299912643516094464
+        send_channel = await bot.fetch_channel(send_channel_id)
+        message_Embed = discord.Embed(
+            title=f"{user_name}",
+            color=0xff0000,
+            description=f"name：{user_name}\nid：{user_id}\ncreated_at：{create}\nglobal_name：{global_name}",
+            timestamp=datetime.now(),
+        )
+        message_Embed.set_thumbnail(url=f"{user_avatar}")
+        await send_channel.send(embed=message_Embed)
+
+@bot.event
+async def voice_state_update(member, before, after):
+    user = member.author
+    user_name = user.name
+    user_avatar = user.avatar
+    channel_id = after.channel.id
+    channel_name = after.channel.name
+    server_id = user.guild.id
+    before = before.channel
+    after = after.channel
+
+    if before != after:
+        if server_id == 1235075709026697246:
+            send_channel_id = 1299912657368911903
+            send_channel = await bot.fetch_channel(send_channel_id)
+
+            if before.channel is not None:
+                message_Embed = discord.Embed(
+                    title=f"{user_name}",
+                    color=0xff0000,
+                    description=f"{user_name}が<#{channel_id}>から退出しました",
+                    timestamp=datetime.now(),
+                )
+                message_Embed.set_thumbnail(url=f"{user_avatar}")
+                message_Embed.set_footer(text=f"{channel_name}")
+            if after.channel is not None:
+                message_Embed = discord.Embed(
+                    title=f"{user_name}",
+                    color=0x00ff00,
+                    description=f"{user_name}が<#{channel_id}>に入室しました",
+                    timestamp=datetime.now(),
+                )
+                message_Embed.set_thumbnail(url=f"{user_avatar}")
+                message_Embed.set_footer(text=f"{channel_name}")
 
 # BOTの実行
 try:
