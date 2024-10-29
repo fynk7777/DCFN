@@ -11,7 +11,7 @@ import sys
 
 # TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
-start_message ~ os.getnv("message")
+start_message = os.getenv("message")
 
 # Intentsの設定
 intents = discord.Intents.all()
