@@ -11,6 +11,7 @@ import sys
 
 # TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
+start_message ~ os.getnv("message")
 
 # Intentsの設定
 intents = discord.Intents.all()
@@ -115,7 +116,7 @@ async def send_update_message():
 
     # 埋め込みメッセージの作成
     embed = discord.Embed(
-        title="BOTが起動しました！",
+        title=f"BOTが{start_message}起動しました！",
         description="BOT has been started!",
         color=0x00BFFF,
         timestamp=datetime.now()
