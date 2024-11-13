@@ -413,7 +413,7 @@ async def on_member_join(member):
         await send_channel.send(embed=message_Embed)
 
 @bot.event
-async def on_member_remove(member):
+async def on_raw_member_remove(member):
     user = member
     user_name = user.name
     user_avatar = user.avatar
