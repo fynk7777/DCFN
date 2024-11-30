@@ -116,7 +116,7 @@ async def send_update_message():
 
     # 埋め込みメッセージの作成
     embed = discord.Embed(
-        title=f"BOTが{start_message}で起動しました！",
+        title=f"{start_message}",
         description="BOT has been started!",
         color=0x00BFFF,
         timestamp=datetime.now()
