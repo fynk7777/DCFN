@@ -415,7 +415,8 @@ async def on_member_join(member):
 @bot.event
 async def on_raw_member_remove(member):
     user = member
-    user_name = user.name
+    if user.name is not None:
+        user_name = user.name
     user_avatar = user.avatar
     user_id = user.id
     create = user.created_at
