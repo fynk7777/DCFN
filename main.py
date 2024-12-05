@@ -160,130 +160,132 @@ async def on_message(message):
     message_id = message.id
     guild = message.guild
     channel = message.channel
-    channel_name = channel.name
-    channel_id = channel.id
-    user = message.author
-    user_id = user.id
-    user_name = user.name
-    user_avatar = user.avatar
-    server_id = message.guild.id
-    file = message.attachments
-    file_url = file[0].url if file else None
-    message_embeds = message.embeds
-    
-
-    if server_id == 1267365569678802965:
-        if channel_id == 1271568627728121927:
-            send_channel_id = 1299927508736540754
-            send_channel = await bot.fetch_channel(send_channel_id)
-            if file_url:
-                await send_channel.send(file_url)
-
-            if message.embeds:
-                original_embed = message.embeds[0]  # 最初の埋め込みを取得
-                await send_channel.send(embed=original_embed)
-        else:
-            send_channel_id = 1299912523062972507
-            send_channel = await bot.fetch_channel(send_channel_id)
-            target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
-            message_Embed = discord.Embed(
-                title=f"{user_name}",
-                description=f"{message_content}",
-                color=0x00ff00 ,
-                timestamp=datetime.now()
-            )
-            message_Embed.set_thumbnail(url=f"{user_avatar}")
-            message_Embed.set_footer(text=f"{channel_name}")
-
-            view = discord.ui.View(timeout=None)
-            view.add_item(
-                discord.ui.Button(
-                    label="メッセージ先はこちら",
-                    style=discord.ButtonStyle.link,
-                    url=target_message_link
-                )
-            )
-
-            await send_channel.send(embed=message_Embed , view=view)
-            if file_url:
-                await send_channel.send(file_url)
-
-            if message.embeds:
-                original_embed = message.embeds[0]  # 最初の埋め込みを取得
-                await send_channel.send(embed=original_embed)
-
-    global channel_pairs, user_word_counts, respond_words
-    global latest_bump_time
-    if message.author == bot.user:
+    if channel.name is None:
         return
+    else:
+        channel_name = channel.name
+        channel_id = channel.id
+        user = message.author
+        user_id = user.id
+        user_name = user.name
+        user_avatar = user.avatar
+        server_id = message.guild.id
+        file = message.attachments
+        file_url = file[0].url if file else None
+        message_embeds = message.embeds
 
-    embeds = message.embeds
-    if embeds is not None and len(embeds) != 0:
-        if "表示順をアップしたよ" in (embeds[0].description or ""):
-            latest_bump_time = datetime.now()  # 最新のBUMPの時刻を記録
-            await handle_bump_notification(message)
-
-    message_link_pattern = re.compile(r'https://discord.com/channels/(\d+)/(\d+)/(\d+)')
-    match = message_link_pattern.search(message.content)
-
-    if match:
-        server_id = int(match.group(1))
-        channel_id = int(match.group(2))
-        message_id = int(match.group(3))
-
-        guild = bot.get_guild(server_id)
-        if guild:
-            channel = guild.get_channel(channel_id)
-            if channel:
-                try:
-                    target_message = await channel.fetch_message(message_id)
-                    message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
-
-                    embed = discord.Embed(
-                        description=f"{target_message.content}\nFrom {channel.mention}",
-                        color=discord.Color.blue(),
-                        timestamp=target_message.created_at
-                    )
-                    author_avatar_url = target_message.author.display_avatar.url
-                    embed.set_author(name=target_message.author.display_name, icon_url=author_avatar_url)
-
-                    for attachment in target_message.attachments:
-                        embed.set_image(url=attachment.url)
-
-                    button = discord.ui.Button(label="メッセージ先はこちら", url=message_link)
-                    view = discord.ui.View()
-                    view.add_item(button)
-
-                    await message.channel.send(embed=embed, view=view)
-
-                except discord.NotFound:
-                    await message.channel.send('メッセージが見つかりませんでした。')
-                except discord.Forbidden:
-                    await message.channel.send('メッセージを表示する権限がありません。')
-                except discord.HTTPException as e:
-                    await message.channel.send(f'メッセージの取得に失敗しました: {e}')
-
-    if message.content == "DCFN!bot stop":
         if server_id == 1267365569678802965:
-            if user_id == 1212687868603007067:
-                embed = discord.Embed(title='BOTが停止しました^^',description="なるはやで起動させてください。",color=0xff0000,timestamp=datetime.utcnow())
-                await message.channel.send(embed=embed)
-                sys.exit()
-            else:
-                await message.channel.send("あなたにはこの操作を行う権限がありません。")
-    # 「r!test」が送信された場合に「あ」と返す
-    elif message.content == "b!test" or message.content == "DCFN!test":
-        await message.channel.send("GitHubで起動されています")
-    # 「r!vsc」が送信された場合にvscのリンクを返す
-    elif message.content == "DCFN!vsc":
-        if user_id == 1212687868603007067:
-            await message.channel.send("https://vscode.dev/github/fynk7777/fortnite-server?vscode-lang=ja")
-    elif message.content == "DCFN!link":
-        await message.channel.send("https://github.com/fynk7777/DCFN")
+            if channel_id == 1271568627728121927:
+                send_channel_id = 1299927508736540754
+                send_channel = await bot.fetch_channel(send_channel_id)
+                if file_url:
+                    await send_channel.send(file_url)
 
-    if isinstance(message.channel, discord.TextChannel) and message.channel.is_news():
-        # メッセージを公開
-        await message.publish()
+                if message.embeds:
+                    original_embed = message.embeds[0]  # 最初の埋め込みを取得
+                    await send_channel.send(embed=original_embed)
+            else:
+                send_channel_id = 1299912523062972507
+                send_channel = await bot.fetch_channel(send_channel_id)
+                target_message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
+                message_Embed = discord.Embed(
+                    title=f"{user_name}",
+                    description=f"{message_content}",
+                    color=0x00ff00 ,
+                    timestamp=datetime.now()
+                )
+                message_Embed.set_thumbnail(url=f"{user_avatar}")
+                message_Embed.set_footer(text=f"{channel_name}")
+
+                view = discord.ui.View(timeout=None)
+                view.add_item(
+                    discord.ui.Button(
+                        label="メッセージ先はこちら",
+                        style=discord.ButtonStyle.link,
+                        url=target_message_link
+                    )
+                )
+
+                await send_channel.send(embed=message_Embed , view=view)
+                if file_url:
+                    await send_channel.send(file_url)
+
+                if message.embeds:
+                    original_embed = message.embeds[0]  # 最初の埋め込みを取得
+                    await send_channel.send(embed=original_embed)
+
+        global channel_pairs, user_word_counts, respond_words
+        global latest_bump_time
+        if message.author == bot.user:
+            return
+
+        embeds = message.embeds
+        if embeds is not None and len(embeds) != 0:
+            if "表示順をアップしたよ" in (embeds[0].description or ""):
+                latest_bump_time = datetime.now()  # 最新のBUMPの時刻を記録
+                await handle_bump_notification(message)
+
+        message_link_pattern = re.compile(r'https://discord.com/channels/(\d+)/(\d+)/(\d+)')
+        match = message_link_pattern.search(message.content)
+
+        if match:
+            server_id = int(match.group(1))
+            channel_id = int(match.group(2))
+            message_id = int(match.group(3))
+
+            guild = bot.get_guild(server_id)
+            if guild:
+                channel = guild.get_channel(channel_id)
+                if channel:
+                    try:
+                        target_message = await channel.fetch_message(message_id)
+                        message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
+
+                        embed = discord.Embed(
+                            description=f"{target_message.content}\nFrom {channel.mention}",
+                            color=discord.Color.blue(),
+                            timestamp=target_message.created_at
+                        )
+                        author_avatar_url = target_message.author.display_avatar.url
+                        embed.set_author(name=target_message.author.display_name, icon_url=author_avatar_url)
+
+                        for attachment in target_message.attachments:
+                            embed.set_image(url=attachment.url)
+
+                        button = discord.ui.Button(label="メッセージ先はこちら", url=message_link)
+                        view = discord.ui.View()
+                        view.add_item(button)
+
+                        await message.channel.send(embed=embed, view=view)
+
+                    except discord.NotFound:
+                        await message.channel.send('メッセージが見つかりませんでした。')
+                    except discord.Forbidden:
+                        await message.channel.send('メッセージを表示する権限がありません。')
+                    except discord.HTTPException as e:
+                        await message.channel.send(f'メッセージの取得に失敗しました: {e}')
+
+        if message.content == "DCFN!bot stop":
+            if server_id == 1267365569678802965:
+                if user_id == 1212687868603007067:
+                    embed = discord.Embed(title='BOTが停止しました^^',description="なるはやで起動させてください。",color=0xff0000,timestamp=datetime.utcnow())
+                    await message.channel.send(embed=embed)
+                    sys.exit()
+                else:
+                    await message.channel.send("あなたにはこの操作を行う権限がありません。")
+        # 「r!test」が送信された場合に「あ」と返す
+        elif message.content == "b!test" or message.content == "DCFN!test":
+            await message.channel.send("GitHubで起動されています")
+        # 「r!vsc」が送信された場合にvscのリンクを返す
+        elif message.content == "DCFN!vsc":
+            if user_id == 1212687868603007067:
+                await message.channel.send("https://vscode.dev/github/fynk7777/fortnite-server?vscode-lang=ja")
+        elif message.content == "DCFN!link":
+            await message.channel.send("https://github.com/fynk7777/DCFN")
+
+        if isinstance(message.channel, discord.TextChannel) and message.channel.is_news():
+            # メッセージを公開
+            await message.publish()
 
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
 @app_commands.describe(text="ステータスを設定します")
