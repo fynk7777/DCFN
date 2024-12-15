@@ -288,9 +288,8 @@ async def on_message(message):
         # メッセージを公開
         await message.publish()
 
-    if channel_id == 1285683978837295228:
-        print(user_id==1257680475120730223)
-        if user_id == 1257680475120730223:
+    if channel_id == 1268129212531871794:
+        if user_id == 1271574158295306291:
             fixed_id = message_id
         else:
             embed = discord.Embed(
@@ -298,9 +297,9 @@ async def on_message(message):
                 description="```【ID】：\n【主にやってるモード】：\n【フォトナ歴】：\n【機種】：\n【一言】：```コピーして使用できます。\n__絶対これにする必要はありません__\n\n↓でテンプレートをコピーすることも出来ます。\n[>>自己紹介テンプレートをコピー<<](https://fynk7777.github.io/copy/)"
             )
             if fixed_id != "":
-                message_to_delete = await channel.fetch_message(fixed_id)  # メッセージを非同期で取得
-                await message_to_delete.delete()  # メッセージを削除
-            await channel.send(embed=embed)  # 修正: embedを送信する
+                message_to_delete = await channel.fetch_message(fixed_id)
+                await message_to_delete.delete()
+            await channel.send(embed=embed)
 
                     
 
