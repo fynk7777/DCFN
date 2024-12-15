@@ -29,7 +29,8 @@ latest_bump_time = None
 # BOTロールと参加者ロールの名前を定義
 BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
-fixed_id = ""
+
+fixed_id = ""  # グローバル変数として宣言
 
 ROLE_ID = 1267947998374268939  # 特定のロールID
 TARGET_CHANNELS = [1272202112003997726, ]  # 特定のチャンネルIDリスト(threadのやつ)
@@ -157,6 +158,7 @@ async def check_members():
 
 @bot.event
 async def on_message(message):
+    global fixed_id  # グローバル変数として使用
     message_content = message.content
     message_id = message.id
     guild = message.guild
