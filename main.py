@@ -30,7 +30,7 @@ latest_bump_time = None
 BOT_ROLE_NAME = "🤖BOT"
 PARTICIPANT_ROLE_NAME = "😀参加者"
 
-fixed_id = ""  # グローバル変数として宣言
+is_sending_message = False
 
 ROLE_ID = 1267947998374268939  # 特定のロールID
 TARGET_CHANNELS = [1272202112003997726, ]  # 特定のチャンネルIDリスト(threadのやつ)
@@ -158,7 +158,7 @@ async def check_members():
 
 @bot.event
 async def on_message(message):
-    global fixed_id  # グローバル変数として使用
+    global is_sending_message  # グローバル変数として宣言
     message_content = message.content
     message_id = message.id
     guild = message.guild
@@ -290,19 +290,41 @@ async def on_message(message):
         # メッセージを公開
         await message.publish()
 
+    # 特定のチャンネルIDを指定（1268129212531871794）
     if channel_id == 1268129212531871794:
-        if user_id == 1271574158295306291:
-            fixed_id = message_id
-        else:
-            embed = discord.Embed(
-                title="自己紹介テンプレート",
-                description="```【ID】：\n【主にやってるモード】：\n【フォトナ歴】：\n【機種】：\n【一言】：```コピーして使用できます。\n__絶対これにする必要はありません__\n\n↓でテンプレートをコピーすることも出来ます。\n[>>自己紹介テンプレートをコピー<<](https://fynk7777.github.io/copy/)"
-            )
-            if fixed_id != "":
-                message_to_delete = await channel.fetch_message(fixed_id)
-                await message_to_delete.delete()
-            await channel.send(embed=embed)
 
+        # ボット以外のユーザーのメッセージに反応する処理
+        if user_id != 1271574158295306291:
+            try:
+                # メッセージ送信中でない場合のみ送信
+                if not is_sending_message:
+                    is_sending_message = True  # メッセージ送信中に設定
+
+                    # 直近50件のメッセージを検索
+                    async for msg in message.channel.history(limit=50):
+                        if msg.author.id == 1271574158295306291:
+                            await msg.delete()  # ボットのメッセージを削除
+                            break  # 最初に見つけたボットのメッセージを削除したら終了
+                    
+                    # ボットがメッセージを送信
+                    embed = discord.Embed(
+                        title="自己紹介テンプレート",
+                        description="```【ID】：\n【主にやってるモード】：\n【フォトナ歴】：\n【機種】：\n【一言】：```コピーして使用できます。\n__絶対これにする必要はありません__\n\n↓でテンプレートをコピーすることも出来ます。\n[>>自己紹介テンプレートをコピー<<](https://fynk7777.github.io/copy/)"
+                    )
+                    await message.channel.send(embed=embed)
+
+                    # メッセージ送信後に少し待機して次のメッセージ送信を防止
+                    await asyncio.sleep(1)  # 1秒の待機
+
+                    is_sending_message = False  # メッセージ送信完了後にフラグを戻す
+
+
+            except discord.NotFound:
+                print("Message not found.")  # メッセージが見つからない場合
+            except discord.Forbidden:
+                print("Bot does not have permission to delete messages.")  # 権限エラー
+            except discord.HTTPException as e:
+                print(f"Failed to delete message: {e}")  # その他のエラー
                     
 
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
