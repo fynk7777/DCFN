@@ -366,7 +366,7 @@ async def on_message(message):
             if channel_id == 1271884248932155473:
                 embeds = message.embeds
                 if embeds is not None and len(embeds) != 0:
-                    if "BOTが起動しました" in (embeds[0].title or ""):
+                    if "BOT has been started!" in (embeds[0].description or ""):
                         sys.exit()
                     
 
