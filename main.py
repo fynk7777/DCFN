@@ -260,13 +260,16 @@ async def on_message(message):
                     view = discord.ui.View()
                     view.add_item(button)
 
-                    content_file = message.attachments
+                    content_file = target_message.attachments
                     content_file_url = content_file[0].url if content_file else None
 
                     await message.channel.send(embed=embed, view=view)
 
                     if content_file_url:
+                        print('ファイルを添付しました')
                         await message.channel.send(content_file_url)
+                    else:
+                        print('ファイルが添付されていません。')
 
                 except discord.NotFound:
                     await message.channel.send('メッセージが見つかりませんでした。')
