@@ -38,6 +38,8 @@ TARGET_CHANNELS = [1272202112003997726, ]  # 特定のチャンネルIDリスト
 
 ALLOWED_USERS = [ 1212687868603007067 ]  # ユーザーIDを追加
 
+starting = False
+
 # 起動時に動作する処理
 @bot.event
 async def on_ready():
@@ -159,7 +161,7 @@ async def check_members():
 
 @bot.event
 async def on_message(message):
-    global is_sending_message  # グローバル変数として宣言
+    global is_sending_message,starting  # グローバル変数として宣言
     message_content = message.content
     message_id = message.id
     guild = message.guild
