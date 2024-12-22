@@ -356,6 +356,10 @@ async def on_message(message):
                 print("Bot does not have permission to delete messages.")  # 権限エラー
             except discord.HTTPException as e:
                 print(f"Failed to delete message: {e}")  # その他のエラー
+
+    if user_id == 1295240136564408350:
+        if channel_id == 1320331608997236756:
+            sys.exit()
                     
 
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
