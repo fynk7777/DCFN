@@ -357,7 +357,7 @@ async def on_message(message):
             except discord.HTTPException as e:
                 print(f"Failed to delete message: {e}")  # その他のエラー
 
-    if user_id == 1295240136564408350:
+    if user_id == 1320331955337695252:
         if channel_id == 1320331608997236756:
             sys.exit()
                     
