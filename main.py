@@ -217,6 +217,7 @@ async def on_message(message):
                 original_embed = message.embeds[0]  # 最初の埋め込みを取得
                 await send_channel.send(embed=original_embed)
 
+
     global channel_pairs, user_word_counts, respond_words
     global latest_bump_time
     if message.author == bot.user:
@@ -259,7 +260,13 @@ async def on_message(message):
                     view = discord.ui.View()
                     view.add_item(button)
 
+                    content_file = message.attachments
+                    content_file_url = content_file[0].url if content_file else None
+
                     await message.channel.send(embed=embed, view=view)
+
+                    if content_file_url:
+                        await message.channel.send(content_file_url)
 
                 except discord.NotFound:
                     await message.channel.send('メッセージが見つかりませんでした。')
