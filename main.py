@@ -8,6 +8,7 @@ from discord.ext import commands, tasks
 from keep_alive import keep_alive
 from discord.ui import Button, View
 import sys
+import aiohttp
 
 # TOKENの指定
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -265,9 +266,29 @@ async def on_message(message):
 
                     await message.channel.send(embed=embed, view=view)
 
+                    # ファイルをダウンロードして添付する処理
                     if content_file_url:
-                        print('ファイルを添付しました')
-                        await message.channel.send(content_file_url)
+                        picture_extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp']
+
+                        # ファイルが画像以外の場合に添付
+                        if not any(content_file_url.endswith(ext) for ext in picture_extensions):
+                            async with aiohttp.ClientSession() as session:
+                                async with session.get(content_file_url) as response:
+                                    if response.status == 200:
+                                        file_data = await response.read()
+                                        file_name = content_file[0].filename  # 元のファイル名を取得
+
+                                        # ファイルを一時保存して送信
+                                        with open(file_name, 'wb') as f:
+                                            f.write(file_data)
+
+                                        await message.channel.send(file=discord.File(file_name))
+
+                                        # 一時ファイルを削除
+                                        os.remove(file_name)
+                                    else:
+                                        await message.channel.send('ファイルのダウンロードに失敗しました。')
+
                     else:
                         print('ファイルが添付されていません。')
 
