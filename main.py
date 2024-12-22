@@ -358,8 +358,16 @@ async def on_message(message):
                 print(f"Failed to delete message: {e}")  # その他のエラー
 
     if user_id == 1320331955337695252:
-        if channel_id == 1320331608997236756:
-            sys.exit()
+        if channel_id == 1295239928807948411:
+            starting = True
+
+    if starting:
+        if user_id == 1271574158295306291:
+            if channel_id == 1271884248932155473:
+                embeds = message.embeds
+                if embeds is not None and len(embeds) != 0:
+                    if "BOTが起動しました" in (embeds[0].title or ""):
+                        sys.exit()
                     
 
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
