@@ -358,7 +358,7 @@ async def on_message(message):
                 print(f"Failed to delete message: {e}")  # その他のエラー
 
     if user_id == 1320331955337695252:
-        if channel_id == 1295239928807948411:
+        if channel_id == 1320331608997236756:
             starting = True
 
     if starting:
