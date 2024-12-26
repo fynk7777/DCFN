@@ -241,7 +241,6 @@ async def on_message(message):
         message_id = int(match.group(3))
 
         guild = bot.get_guild(server_id)
-        channel = guild.get_channel(channel_id)
         if guild:
             try:
                 target_channel = guild.get_channel_or_thread(channel_id)
@@ -254,7 +253,7 @@ async def on_message(message):
                     content = target_message.content
 
                 embed = discord.Embed(
-                    description=f"{content}\nFrom {channel.mention}",
+                    description=f"{content}\nFrom <#${channel_id}>",
                     color=discord.Color.blue(),
                     timestamp=target_message.created_at
                 )
