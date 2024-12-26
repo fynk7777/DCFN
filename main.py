@@ -247,7 +247,7 @@ async def on_message(message):
                 target_message = await target_channel.fetch_message(message_id)
                 message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
 
-                if content == "":
+                if target_message.content == "":
                     content = "本文なし"
                 else:
                     content = target_message.content
