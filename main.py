@@ -242,65 +242,68 @@ async def on_message(message):
 
         guild = bot.get_guild(server_id)
         if guild:
-            channel = guild.get_channel(channel_id)
-            if channel:
-                try:
-                    target_channel = guild.get_channel_or_thread(channel_id)
-                    target_message = await target_channel.fetch_message(message_id)
-                    message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
+            try:
+                target_channel = guild.get_channel_or_thread(channel_id)
+                target_message = await target_channel.fetch_message(message_id)
+                message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
 
-                    embed = discord.Embed(
-                        description=f"{target_message.content}\nFrom {channel.mention}",
-                        color=discord.Color.blue(),
-                        timestamp=target_message.created_at
-                    )
-                    author_avatar_url = target_message.author.display_avatar.url
-                    embed.set_author(name=target_message.author.display_name, icon_url=author_avatar_url)
+                if content == "":
+                    content = "本文なし"
+                else:
+                    content = target_message.content
 
-                    for attachment in target_message.attachments:
-                        embed.set_image(url=attachment.url)
+                embed = discord.Embed(
+                    description=f"{content}\nFrom {channel.mention}",
+                    color=discord.Color.blue(),
+                    timestamp=target_message.created_at
+                )
+                author_avatar_url = target_message.author.display_avatar.url
+                embed.set_author(name=target_message.author.display_name, icon_url=author_avatar_url)
 
-                    button = discord.ui.Button(label="メッセージ先はこちら", url=message_link)
-                    view = discord.ui.View()
-                    view.add_item(button)
+                for attachment in target_message.attachments:
+                    embed.set_image(url=attachment.url)
 
-                    content_file = target_message.attachments
-                    content_file_url = content_file[0].url if content_file else None
+                button = discord.ui.Button(label="メッセージ先はこちら", url=message_link)
+                view = discord.ui.View()
+                view.add_item(button)
 
-                    await message.channel.send(embed=embed, view=view)
+                content_file = target_message.attachments
+                content_file_url = content_file[0].url if content_file else None
 
-                    # ファイルをダウンロードして添付する処理
-                    if content_file_url:
-                        picture_extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp']
+                await message.channel.send(embed=embed, view=view)
 
-                        # ファイルが画像以外の場合に添付
-                        if not any(content_file_url.endswith(ext) for ext in picture_extensions):
-                            async with aiohttp.ClientSession() as session:
-                                async with session.get(content_file_url) as response:
-                                    if response.status == 200:
-                                        file_data = await response.read()
-                                        file_name = content_file[0].filename  # 元のファイル名を取得
+                # ファイルをダウンロードして添付する処理
+                if content_file_url:
+                    picture_extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp']
 
-                                        # ファイルを一時保存して送信
-                                        with open(file_name, 'wb') as f:
-                                            f.write(file_data)
+                    # ファイルが画像以外の場合に添付
+                    if not any(content_file_url.endswith(ext) for ext in picture_extensions):
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(content_file_url) as response:
+                                if response.status == 200:
+                                    file_data = await response.read()
+                                    file_name = content_file[0].filename  # 元のファイル名を取得
 
-                                        await message.channel.send(file=discord.File(file_name))
+                                    # ファイルを一時保存して送信
+                                    with open(file_name, 'wb') as f:
+                                        f.write(file_data)
 
-                                        # 一時ファイルを削除
-                                        os.remove(file_name)
-                                    else:
-                                        await message.channel.send('ファイルのダウンロードに失敗しました。')
+                                    await message.channel.send(file=discord.File(file_name))
 
-                    else:
-                        print('ファイルが添付されていません。')
+                                    # 一時ファイルを削除
+                                    os.remove(file_name)
+                                else:
+                                    await message.channel.send('ファイルのダウンロードに失敗しました。')
 
-                except discord.NotFound:
-                    await message.channel.send('メッセージが見つかりませんでした。')
-                except discord.Forbidden:
-                    await message.channel.send('メッセージを表示する権限がありません。')
-                except discord.HTTPException as e:
-                    await message.channel.send(f'メッセージの取得に失敗しました: {e}')
+                else:
+                    print('ファイルが添付されていません。')
+
+            except discord.NotFound:
+                await message.channel.send('メッセージが見つかりませんでした。')
+            except discord.Forbidden:
+                await message.channel.send('メッセージを表示する権限がありません。')
+            except discord.HTTPException as e:
+                await message.channel.send(f'メッセージの取得に失敗しました: {e}')
 
     if message.content == "DCFN!bot stop":
         if server_id == 1267365569678802965:
