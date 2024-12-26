@@ -245,7 +245,8 @@ async def on_message(message):
             channel = guild.get_channel(channel_id)
             if channel:
                 try:
-                    target_message = await channel.fetch_message(message_id)
+                    target_channel = guild.get_channel_or_thread(channel_id)
+                    target_message = await target_channel.fetch_message(message_id)
                     message_link = f"https://discord.com/channels/{server_id}/{channel_id}/{message_id}"
 
                     embed = discord.Embed(
