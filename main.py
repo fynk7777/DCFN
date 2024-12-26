@@ -253,7 +253,7 @@ async def on_message(message):
                     content = target_message.content
 
                 embed = discord.Embed(
-                    description=f"{content}\nFrom <#{channel_id}>",
+                    description=f"{content}\n-# From <#{channel_id}>",
                     color=discord.Color.blue(),
                     timestamp=target_message.created_at
                 )
@@ -365,11 +365,13 @@ async def on_message(message):
 
     if user_id == 1320331955337695252:
         if channel_id == 1320331608997236756:
+            print('starting = True')
             starting = True
 
     if starting == True:
         if user_id == 1271574158295306291:
             if channel_id == 1271884248932155473:
+                print('sys.exit')
                 sys.exit()
                     
 
