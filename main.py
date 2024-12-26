@@ -253,7 +253,7 @@ async def on_message(message):
                     content = target_message.content
 
                 embed = discord.Embed(
-                    description=f"{content}\nFrom <#${channel_id}>",
+                    description=f"{content}\nFrom <#{channel_id}>",
                     color=discord.Color.blue(),
                     timestamp=target_message.created_at
                 )
