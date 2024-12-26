@@ -241,6 +241,7 @@ async def on_message(message):
         message_id = int(match.group(3))
 
         guild = bot.get_guild(server_id)
+        channel = guild.get_channel(channel_id)
         if guild:
             try:
                 target_channel = guild.get_channel_or_thread(channel_id)
@@ -367,13 +368,10 @@ async def on_message(message):
         if channel_id == 1320331608997236756:
             starting = True
 
-    if starting:
+    if starting == True:
         if user_id == 1271574158295306291:
             if channel_id == 1271884248932155473:
-                embeds = message.embeds
-                if embeds is not None and len(embeds) != 0:
-                    if "BOT has been started!" in (embeds[0].description or ""):
-                        sys.exit()
+                sys.exit()
                     
 
 @bot.tree.command(name="status",description="ステータスを設定するコマンドです")
